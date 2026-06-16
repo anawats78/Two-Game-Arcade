@@ -182,12 +182,12 @@ class SkeletonDetector:
         if is_selected:
             joint_color = config.SELECTED_HAND_JOINT_COLOR
             bone_color = config.SELECTED_HAND_BONE_COLOR
-            joint_radius = 4
-            bone_thickness = 3
+            joint_radius = 1
+            bone_thickness = 1
         else:
             joint_color = config.UNSELECTED_HAND_JOINT_COLOR
             bone_color = config.UNSELECTED_HAND_BONE_COLOR
-            joint_radius = 2
+            joint_radius = 1
             bone_thickness = 1
 
         self.drawing.draw_landmarks(

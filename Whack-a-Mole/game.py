@@ -152,7 +152,21 @@ class WhackAMoleGame:
         self.play_area = pygame.Rect(0, 0, config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
         self.start_button = Button(pygame.Rect(380, 430, 200, 58), "Start")
         self.quit_button = Button(pygame.Rect(380, 505, 200, 58), "Quit")
-        self.play_again_button = Button(pygame.Rect(350, 500, 260, 58), "Play Again")
+        self.play_again_button = Button(pygame.Rect(350, 460, 260, 58), "Play Again")
+        self.lobby_button = Button(pygame.Rect(350, 540, 260, 58), "Back to Lobby")
+
+        import os
+        campaign_file = "campaign_temp.txt"
+        if os.path.exists(campaign_file):
+            with open(campaign_file, "r", encoding="utf-8") as f:
+                lines = f.read().splitlines()
+                if len(lines) >= 2:
+                    self.player_name = lines[0]
+                    self.score = int(lines[1])  # เอาคะแนนจาก Pose Match มาเป็นคะแนนตั้งต้น
+                    self.state = "playing"      # ข้ามหน้าเมนูหลัก มุ่งตรงไปหน้าเล่นเกมเลย
+                    self.game_started_at = time.time()
+                    self.next_spawn_time = self.game_started_at + 0.5
+            os.remove(campaign_file) # ลบไฟล์ทิ้งหลังอ่านเสร็จ เพื่อไม่ให้ค้างในรอบหน้า
 
     def run(self) -> None:
         while self.running:
@@ -228,6 +242,8 @@ class WhackAMoleGame:
                 self.start_game()
             elif self.play_again_button.was_clicked(event):
                 self.start_game()
+            elif self.lobby_button.was_clicked(event): 
+                self.running = False # ออกจากเกมตีตุ่น เพื่อกลับหน้าหลัก
 
         self.draw_result()
         pygame.display.flip()
@@ -340,6 +356,7 @@ class WhackAMoleGame:
         self.draw_title("Game Over", f"Score: {self.score}")
         self.draw_leaderboard(350, 300)
         self.play_again_button.draw(self.screen, self.medium_font)
+        self.lobby_button.draw(self.screen, self.medium_font)
 
     def draw_title(self, line_one: str, line_two: str) -> None:
         title = self.title_font.render(line_one, True, config.TEXT_COLOR)
